@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusivo para o Amor da Minha Vida</title>
+    <style>
+        body {
+            font-family: 'Segoe Script', cursive, Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe0e9 0%, #fff1f1 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .heart {
+            color: #e63946;
+            font-size: 2.5em;
+            position: absolute;
+            animation: pulse 2s infinite;
+            pointer-events: none;
+            user-select: none;
+        }
+        .heart1 { top: 30px; left: 20px; }
+        .heart2 { top: 80px; right: 40px; font-size: 2em; animation-delay: 1s; }
+        .heart3 { bottom: 60px; left: 60px; font-size: 1.8em; animation-delay: 0.5s; }
+        .heart4 { bottom: 40px; right: 30px; font-size: 2.2em; animation-delay: 1.5s; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1);}
+            50% { transform: scale(1.2);}
+        }
+        .intro, .main-content {
+            padding: 30px 25px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(230,57,70,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            max-width: 350px;
+        }
+        .intro {
+            display: flex;
+        }
+        .main-content {
+            display: none;
+        }
+        .intro h1, .main-content h1 {
+            color: #e63946;
+            font-family: 'Segoe Script', cursive;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        .intro p, .main-content p {
+            color: #6d6875;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .check-area {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-family: 'Segoe Script', cursive;
+            transition: background 0.2s;
+        }
+        .btn:disabled {
+            background: #f8b6c1;
+            cursor: not-allowed;
+        }
+        .parabens {
+            color: #e63946;
+            font-size: 1.3em;
+            margin-top: 20px;
+            font-family: 'Segoe Script', cursive;
+            display: none;
+        }
+        .cronometro {
+            font-size: 2em;
+            color: #e63946;
+            font-weight: bold;
+            background: rgba(255,224,233,0.7);
+            border-radius: 12px;
+            display: inline-block;
+            padding: 18px 32px;
+            box-shadow: 0 2px 8px rgba(230,57,70,0.07);
+            margin-bottom: 20px;
+        }
+        .foto-mariane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .foto-mariane img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #e63946;
+            box-shadow: 0 2px 12px rgba(230,57,70,0.12);
+            background: #fff;
+        }
+        .foto-mariane span {
+            margin-top: 10px;
+            font-size: 1.3em;
+            color: #e63946;
+            font-family: 'Segoe Script', cursive;
+        }
+    </style>
+</head>
+<body>
+    <span class="heart heart1">❤</span>
+    <span class="heart heart2">❤</span>
+    <span class="heart heart3">❤</span>
+    <span class="heart heart4">❤</span>
+    <!-- Tela de introdução -->
+    <div class="intro" id="intro">
+        <h1>Site exclusivo para o Amor da minha vida! 💖</h1>
+        <p>
+            Antes de entrar, confirme que você é realmente a pessoa mais especial do mundo!
+        </p>
+        <div class="check-area">
+            <input type="checkbox" id="checkLove">
+            <label for="checkLove">Eu sou o Amor da sua vida! 💘</label>
+        </div>
+        <button class="btn" id="btnEntrar" disabled>Entrar no site</button>
+        <div class="parabens" id="parabensMsg">
+            Parabéns! Você é realmente a pessoa certa! 😍<br>
+            Entrando...
+        </div>
+    </div>
+    <!-- Tela principal com cronômetro -->
+    <div class="main-content" id="mainContent">
+        <h1>Bem-vinda Mariane! 💖</h1>
+        <div class="foto-mariane">
+            <img src="https://i.ibb.co/9HtnZ5PN/mm.jpg" alt="Foto da Mariane">
+            <span>Mariane</span>
+        </div>
+        <p>
+              Nesse site vai mostrar cada segundo desde o dia em que nós tivemos nossa primera conversa .<br> <hr>
+            De Adrian! 💕
+        </p>
+        <div class="cronometro" id="cronometro">
+            00 dias, 00 horas, 00 minutos, 00 segundos
+        </div>
+    </div>
+    <script>
+        // Lógica da introdução
+        const checkLove = document.getElementById('checkLove');
+        const btnEntrar = document.getElementById('btnEntrar');
+        const parabensMsg = document.getElementById('parabensMsg');
+        const intro = document.getElementById('intro');
+        const mainContent = document.getElementById('mainContent');
+
+        checkLove.addEventListener('change', function() {
+            btnEntrar.disabled = !this.checked;
+        });
+
+        btnEntrar.addEventListener('click', function() {
+            parabensMsg.style.display = 'block';
+            setTimeout(function() {
+                intro.style.display = 'none';
+                mainContent.style.display = 'flex';
+            }, 2000);
+        });
+
+        // Cronômetro
+        const dataConhecimento = new Date(2025, 7, 12, 20, 39, 0);
+
+        function atualizarCronometro() {
+            const agora = new Date();
+            let diff = agora - dataConhecimento;
+
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            diff -= dias * (1000 * 60 * 60 * 24);
+
+            const horas = Math.floor(diff / (1000 * 60 * 60));
+            diff -= horas * (1000 * 60 * 60);
+
+            const minutos = Math.floor(diff / (1000 * 60));
+            diff -= minutos * (1000 * 60);
+
+            const segundos = Math.floor(diff / 1000);
+
+            document.getElementById('cronometro').textContent =
+                `${dias} dias, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+        }
+
+        setInterval(atualizarCronometro, 1000);
+        atualizarCronometro();
+    </script>
+</body>
+</html>
