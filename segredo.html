@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segredo do Adrian 💚</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        body {
+            font-family: 'Segoe Script', 'Pacifico', cursive, Arial, sans-serif;
+            background: linear-gradient(135deg, #43a047 0%, #a5d6a7 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .floating-emoji {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10;
+            animation: float 7s linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(1);}
+            100% { transform: translateY(-120px) scale(1.2);}
+        }
+        .container {
+            background: rgba(255,255,255,0.96);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(67,160,71,0.13);
+            padding: 44px 28px;
+            max-width: 420px;
+            text-align: center;
+            animation: fadeIn 1.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        h1 {
+            color: #388e3c;
+            font-size: 2.1em;
+            margin-bottom: 18px;
+            font-family: 'Pacifico', 'Segoe Script', cursive;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #a5d6a7;
+            animation: bounceIn 1.2s;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.7);}
+            60% { transform: scale(1.15);}
+            100% { transform: scale(1);}
+        }
+        p {
+            color: #444;
+            font-size: 1.18em;
+            margin-bottom: 18px;
+            line-height: 1.6;
+            font-family: 'Segoe Script', cursive;
+        }
+        .emoji {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1);}
+            50% { transform: scale(1.15);}
+        }
+        .assinatura {
+            margin-top: 28px;
+            color: #43a047;
+            font-family: 'Pacifico', 'Segoe Script', cursive;
+            font-size: 1.1em;
+        }
+        .voltar-btn {
+            margin-top: 30px;
+            background: linear-gradient(90deg, #43a047 60%, #66bb6a 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 26px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-family: 'Pacifico', 'Segoe Script', cursive;
+            transition: background 0.2s, transform 0.15s;
+            box-shadow: 0 2px 8px rgba(67,160,71,0.13);
+        }
+        .voltar-btn:active {
+            transform: scale(0.97);
+        }
+        .senha-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 18px;
+            animation: fadeIn 1.2s;
+        }
+        .senha-container input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #43a047;
+            margin-bottom: 10px;
+            font-size: 1em;
+            width: 180px;
+            text-align: center;
+        }
+        .senha-container button {
+            background: #43a047;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            font-family: 'Pacifico', 'Segoe Script', cursive;
+            transition: background 0.2s;
+        }
+        .senha-container button:hover {
+            background: #2e7d32;
+        }
+        .erro-senha {
+            color: #e53935;
+            font-size: 0.98em;
+            margin-bottom: 8px;
+            display: none;
+        }
+        .conteudo-segredo {
+            display: none;
+            animation: fadeIn 1.2s;
+        }
+        /* Responsive */
+        @media (max-width: 500px) {
+            .container {
+                max-width: 97vw;
+                padding: 18px 4vw;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Emojis flutuantes
+    const emojis = ['💚','🌟','😄','🦆','🍀','✨','🥰','🌱','🙏','🫶'];
+    for(let i=0;i<10;i++){
+        const e = document.createElement('div');
+        e.className = 'floating-emoji';
+        e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        e.style.left = Math.random()*95 + 'vw';
+        e.style.fontSize = (Math.random()*1.5+1.2) + 'em';
+        e.style.animationDuration = (Math.random()*3+5) + 's';
+        e.style.top = '-60px';
+        document.body.appendChild(e);
+    }
+    // Checa se veio da pageuni.html (não é seguro, mas ajuda um pouco)
+    if (document.referrer.indexOf('pageuni.html') === -1) {
+        document.body.innerHTML = '<div style="color:#388e3c;font-size:1.3em;text-align:center;margin-top:80px;">Acesso não autorizado.<br>Volte para a página principal.</div>';
+    }
+</script>
+    <div class="container">
+        <div class="emoji">💚🙏</div>
+        <div class="senha-container" id="senhaContainer">
+            <div style="margin-bottom:8px;">Digite a palavra secreta para revelar o segredo:</div>
+            <input type="text" id="inputSenha" placeholder="Palavra secreta">
+            <div class="erro-senha" id="erroSenha">Palavra incorreta!</div>
+            <button id="btnRevelar">Revelar</button>
+        </div>
+        <div class="conteudo-segredo" id="conteudoSegredo">
+            <h1>Meu Segredo pra Você, Mariane</h1>
+            <p>
+                <span style="font-size:1.3em;">💭</span><br>
+                Eu não sei mais da possibilidade de nós ainda ter algo, mas tem uma coisa que nunca mudou: meu carinho e meu sentimento por você.<br><br>
+                Mesmo que eu não consiga te falar tudo isso pessoalmente, queria que você soubesse que ainda gosto muito de você. Sempre penso em você com muito carinho, e oro por você e por nós quase todos os dias.<br><br>
+                Desejo de coração que você seja muito feliz, que realize seus sonhos e que Deus cuide de cada detalhe da sua vida. Mesmo que eu não esteja lá, continuo torcendo por você, sempre.<br>
+                <span style="font-size:1.3em;">🌱💚✨</span>
+            </p>
+            <div class="assinatura">
+                Com carinho,<br>
+                Adrian
+            </div>
+            <button class="voltar-btn" onclick="window.location.href='pageuni.html'">Voltar</button>
+        </div>
+    </div>
+    <script>
+        const btnRevelar = document.getElementById('btnRevelar');
+        const inputSenha = document.getElementById('inputSenha');
+        const erroSenha = document.getElementById('erroSenha');
+        const senhaContainer = document.getElementById('senhaContainer');
+        const conteudoSegredo = document.getElementById('conteudoSegredo');
+
+        btnRevelar.addEventListener('click', () => {
+            if (inputSenha.value.trim().toLowerCase() === 'mais esperado') {
+                senhaContainer.style.display = 'none';
+                conteudoSegredo.style.display = 'block';
+            } else {
+                erroSenha.style.display = 'block';
+            }
+        });
+
+        inputSenha.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                btnRevelar.click();
+            }
+        });
+    </script>
+</body>
+</html>
