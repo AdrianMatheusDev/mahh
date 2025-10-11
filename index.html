@@ -742,6 +742,9 @@
             <span>🔒</span> Segredo do Adrian
             <span class="tooltiptext">Tem uma mensagem especial aqui!</span>
         </button>
+        <button class="segredo-btn" id="btnDicaSegredo" style="margin-left:10px;">
+            💡 Dica
+        </button>
     </div>
     <div class="segredo-modal-bg" id="segredoModalBg">
         <div class="segredo-modal" style="position:relative;">
@@ -777,6 +780,23 @@
         <div style="background:#fff; border-radius:16px; padding:32px 28px; box-shadow:0 4px 24px rgba(67,160,71,0.18); display:flex; flex-direction:column; align-items:center; min-width:220px;">
             <div id="elogioMsg" style="font-size:1.18em; color:#388e3c; margin-bottom:18px; text-align:center;"></div>
             <button id="btnFecharElogio" class="btn">Fechar</button>
+        </div>
+    </div>
+    <div id="popupDicaSegredoBg" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.35); align-items:center; justify-content:center; z-index:4000;">
+        <div style="background:#fff; border-radius:16px; padding:32px 28px; box-shadow:0 4px 24px rgba(67,160,71,0.18); display:flex; flex-direction:column; align-items:center; min-width:260px; max-width:95vw;">
+            <div style="font-size:1.15em; color:#388e3c; margin-bottom:18px; white-space:pre-line; text-align:left;">
+<strong>Íncrivel como tudo mudou num instante,</strong>
+<strong>Nem deu tempo de entender o que senti.</strong>
+<strong>Era pra ser só mais um dia normal,</strong>
+<strong>Só que tu chegou.</strong>
+<strong>Porque, sei lá, tem coisa que acontece sem motivo,</strong>
+<strong>E tudo em ti tem esse jeito de surpresa boa.</strong>
+<strong>Ri sem saber o porquê,</strong>
+<strong>A vida virou bagunça boa,</strong>
+<strong>De um jeito que eu não planejei,</strong>
+<strong>O tipo de coisa que só o inesperado explica.</strong>
+            </div>
+            <button id="btnFecharDicaSegredo" class="btn">Fechar</button>
         </div>
     </div>
     <script>
@@ -1052,8 +1072,15 @@
             btnConfirmarPopup.addEventListener('click', function() {
                 popupAvisoBg.style.display = 'none';
             });
+
+            // Botão de dica do segredo
+            document.getElementById('btnDicaSegredo').addEventListener('click', function() {
+    document.getElementById('popupDicaSegredoBg').style.display = 'flex';
+});
+document.getElementById('btnFecharDicaSegredo').addEventListener('click', function() {
+    document.getElementById('popupDicaSegredoBg').style.display = 'none';
+});
         });
     </script>
 </body>
 </html>
-
