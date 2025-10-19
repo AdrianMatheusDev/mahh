@@ -193,35 +193,19 @@ section{
     opacity: 1;
     pointer-events: all;
 }
-.chase-animation {
-    position: relative;
-    width: 100%;
-    height: 100px;
+.transition-heart {
+    font-size: 10rem;
+    color: #ff8fb8;
+    text-shadow: 0 0 20px #ff8fb8, 0 0 40px #ff8fb8;
+    animation: pulsing-heart-transition 2.5s ease-in-out forwards;
+    transform: scale(0);
 }
-.chase-animation .chase-character, .chase-animation .chase-heart {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 3.5rem;
-    animation-duration: 2.5s; /* Duração ajustada */
-    animation-fill-mode: forwards;
-    animation-timing-function: ease-in-out;
-}
-.chase-animation .chase-character.left { left: -10%; animation-name: meet-left; transform: translateY(-50%) scaleX(-1); }
-.chase-animation .chase-character.right { right: -10%; animation-name: meet-right; }
-.chase-animation .chase-heart { left: 50%; animation-name: heart-appear; opacity: 0; transform: translate(-50%, -50%) scale(0); }
-
-@keyframes meet-left {
-    100% { left: 42%; }
-}
-@keyframes meet-right {
-    100% { right: 42%; }
-}
-@keyframes heart-appear {
-    40% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-    65% { opacity: 1; transform: translate(-50%, -120%) scale(1.2); } /* Coração aparece e sobe */
-    80% { opacity: 1; transform: translate(-50%, -110%) scale(0.95); }
-    100% { opacity: 1; transform: translate(-50%, -110%) scale(1.05); } /* Pulso final */
+@keyframes pulsing-heart-transition {
+    0% { transform: scale(0); opacity: 0; }
+    30% { transform: scale(1.1); opacity: 1; }
+    50% { transform: scale(0.95); }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
 }
 @keyframes heart-flee {
     0% { left: 5%; }
@@ -280,11 +264,7 @@ section{
 
   <!-- Transition Overlay -->
   <div id="transition-overlay" class="hidden">
-    <div class="chase-animation">
-      <div class="chase-character left">🐞</div>
-      <div class="chase-character right">🦆</div>
-      <div class="chase-heart">❤️</div>
-    </div>
+    <div class="transition-heart">❤️</div>
   </div>
 
   <div class="container">
