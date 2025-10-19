@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Bem-vinda, Mariane! 💚</title>
+<meta name="color-scheme" content="light">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
 
@@ -151,7 +152,7 @@ section{
     width: 100%; height: 100%; border-radius: 0;
   }
   #modalJoguinho canvas {
-    width: 100%; /* Faz o canvas do jogo ocupar a largura total */
+    width: 100% !important; /* Faz o canvas do jogo ocupar a largura total */
   }
   /* Reduz animações de fundo em mobile para performance */
   .s.s1, .s.s3, .s.s5, .s.s7, .s.s9, .s.s11, .s.s13, .s.s15,
@@ -870,7 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function updateFlap(timestamp) {
             if (flapGameOver) return;
-            if (!lastTime) lastTime = timestamp;
+            if (!lastTime) { lastTime = timestamp; animationFrameId = requestAnimationFrame(updateFlap); return; }
             const deltaTime = (timestamp - lastTime) / 1000; // DeltaTime em segundos
             if (deltaTime > 0.03) { /* Limita o deltaTime para evitar saltos */ animationFrameId = requestAnimationFrame(updateFlap); return; }
 
@@ -1073,7 +1074,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             clearInterval(timerInterval);
             clearInterval(spawnInterval);
-            clickerCanvas.removeEventListener('click', handleClick);
             clickerCanvas.removeEventListener('click', handleInteraction);
             clickerCanvas.removeEventListener('touchstart', handleInteraction);
             gameOver = true;
