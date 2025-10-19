@@ -153,6 +153,7 @@ section{
   }
   #modalJoguinho canvas {
     width: 100% !important; /* Faz o canvas do jogo ocupar a largura total */
+    width: 100%; height: auto; /* Faz o canvas do jogo ocupar a largura total */
   }
   /* Reduz animações de fundo em mobile para performance */
   .s.s1, .s.s3, .s.s5, .s.s7, .s.s9, .s.s11, .s.s13, .s.s15,
@@ -406,7 +407,6 @@ body.game-active .dog-tongue {
           <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
             <button id="btnAbrirFlapBird" class="btn">Flap Bird</button>
             <button id="btnAbrirDinoDuck" class="btn">Corrida da Mariane</button>
-            <button id="btnAbrirClicker" class="btn">Clique Rápido</button>
           </div>
         </section>
 
@@ -520,7 +520,6 @@ O tipo de coisa que só o inesperado explica.
       <button id="btnIniciarJogo" class="btn">Iniciar</button>
       <canvas id="flapCanvas" width="240" height="320" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
       <canvas id="gameCanvas" width="480" height="200" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
-      <canvas id="clickerCanvas" width="480" height="320" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
       <div id="gameMsg" style="color:#388e3c;font-family:Pacifico;margin-top:6px; line-height: 1.4;"></div>
     </div>
   </div>
@@ -791,7 +790,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Canvases
     const flapCanvas = document.getElementById('flapCanvas');
     const gameCanvas = document.getElementById('gameCanvas');
-    const clickerCanvas = document.getElementById('clickerCanvas');
 
     let activeGameStop = null;
 
@@ -805,7 +803,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnIniciarJogo.textContent = 'Iniciar';
       flapCanvas.style.display = 'none';
       gameCanvas.style.display = 'none';
-      clickerCanvas.style.display = 'none';
 
       btnIniciarJogo.onclick = () => {
         btnIniciarJogo.style.display = 'none';
@@ -823,10 +820,6 @@ document.addEventListener('DOMContentLoaded', () => {
       openGameModal('Corrida Doce da Mariane 🦆', startDinoDuckGame, gameCanvas);
     });
 
-    $('#btnAbrirClicker')?.addEventListener('click', () => {
-      openGameModal('Clique Rápido 🎯', startClickerGame, clickerCanvas);
-    });
-
     fecharJoguinho.onclick = () => {
       document.body.dispatchEvent(new CustomEvent('game-active-change', { detail: { active: false } }));
       document.body.classList.remove('game-active');
@@ -839,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Flap Bird Logic ---
     function startFlapBirdGame() {
-        let animationFrameId, flapScore, flapBird, flapPipes, flapGravity, flapGameOver;
+        let flapInterval, flapScore, flapBird, flapPipes, flapGravity, flapGameOver;
         const ctx = flapCanvas.getContext('2d');
         flapScore = 0;
         flapBird = { x: 50, y: 160, vy: 0 };
@@ -847,8 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
         flapGravity = 0.28;
         flapGameOver = false;
         document.body.style.overflow = 'hidden';
-        let flapSpeed = 85; // velocidade em pixels por segundo
-        let lastTime = 0;
+        let flapSpeed = 1.7; // velocidade inicial
 
         function drawFlap() {
             ctx.clearRect(0,0,240,320);
@@ -869,19 +861,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = "#388e3c";
             ctx.fillText("Pontos: "+flapScore, 10, 28);
         }
-        function updateFlap(timestamp) {
+        function updateFlap() {
             if (flapGameOver) return;
-            if (!lastTime) { lastTime = timestamp; animationFrameId = requestAnimationFrame(updateFlap); return; }
-            const deltaTime = (timestamp - lastTime) / 1000; // DeltaTime em segundos
-            if (deltaTime > 0.03) { /* Limita o deltaTime para evitar saltos */ animationFrameId = requestAnimationFrame(updateFlap); return; }
-
-            const gravityPerSecond = flapGravity * 60;
-            flapBird.vy += gravityPerSecond * deltaTime;
-            flapBird.y += flapBird.vy * 60 * deltaTime;
+            flapBird.vy += flapGravity;
+            flapBird.y += flapBird.vy;
             for(let i=0;i<flapPipes.length;i++){
-                flapPipes[i].x -= flapSpeed * deltaTime; // velocidade baseada no tempo
+                flapPipes[i].x -= flapSpeed; // velocidade variável
             }
-            lastTime = timestamp;
             if(flapPipes[flapPipes.length-1].x < 120){
                 flapPipes.push({ x: 260, gap: Math.random()*80+90 });
             }
@@ -900,8 +886,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(flapBird.y > 320-12 || flapBird.y < 12){
                 flapGameOver = true;
             }
-            if (flapSpeed < 210) { // Limite de velocidade
-                flapSpeed += 0.1; // aceleração mais lenta
+            if (flapSpeed < 4) {
+                flapSpeed += 0.002; // ajuste para acelerar devagar
             }
             drawFlap();
             if (flapGameOver) {
@@ -909,8 +895,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameMsg.innerHTML = `Fim de jogo!<br>Sua pontuação: <b>${flapScore}</b><br><span style="font-size:1.1em;">Me manda print! 😄</span>`;
                 btnIniciarJogo.style.display = 'block';
                 btnIniciarJogo.textContent = 'Jogar de Novo';
-            } else {
-                animationFrameId = requestAnimationFrame(updateFlap);
             }
         }
         function flap() {
@@ -922,11 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
         flapCanvas.onclick = eventHandler;
         flapCanvas.ontouchstart = eventHandler;
         document.onkeydown = (e) => { if(e.code==="Space") flap(); };
-        animationFrameId = requestAnimationFrame(updateFlap);
+        flapInterval = setInterval(updateFlap, 1000/50);
         drawFlap();
         
         const stopFlapBirdGame = () => {
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            clearInterval(flapInterval);
             document.onkeydown = null;
             document.body.style.overflow = '';
         };
@@ -1074,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             clearInterval(timerInterval);
             clearInterval(spawnInterval);
+            clickerCanvas.removeEventListener('click', handleClick);
             clickerCanvas.removeEventListener('click', handleInteraction);
             clickerCanvas.removeEventListener('touchstart', handleInteraction);
             gameOver = true;
