@@ -796,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 player.vy = 0;
                 player.isJumping = false;
             }
-            if (Math.random() < 0.02 && obstacles.length < 3) {
+            if (Math.random() < 0.02 && obstacles.length < 3 && (obstacles.length === 0 || obstacles[obstacles.length - 1].x < gameCanvas.width - 200)) {
                 obstacles.push({ x: gameCanvas.width, width: 25, height: 25 });
             }
             if (Math.random() < 0.015) {
@@ -807,9 +807,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 obs.x -= gameSpeed;
                 if (obs.x + obs.width < 0) obstacles.splice(index, 1);
                 // Lógica de colisão específica para os obstáculos no chão
-                if (player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y + player.height > gameCanvas.height - obs.height) 
+                // Colisão um pouco mais permissiva
+                if (player.x < obs.x + obs.width - 5 && // -5 para dar uma margem
+                    player.x + player.width - 5 > obs.x && // -5 para dar uma margem
+                    player.y + player.height > gameCanvas.height - obs.height + 5) // +5 para dar uma margem
                 {
                     gameOver = true;
                 }
@@ -822,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sweets.splice(index, 1);
                 }
             });
-            gameSpeed += 0.001;
+            gameSpeed += 0.0008; // Aceleração um pouco mais lenta
             drawDino();
             if (gameOver) {
                 stopDinoDuckGame();
