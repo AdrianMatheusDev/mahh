@@ -212,6 +212,14 @@ section{
     100% { left: 115%; }
 }
 
+/* Game Performance Optimization */
+body.game-active #cssWallpaper .nebula,
+body.game-active #cssWallpaper .cloud,
+body.game-active #cssWallpaper .s-inner,
+body.game-active #cssWallpaper .heart {
+    animation-play-state: paused;
+}
+
 /* utility */
 .hidden{display:none}
 </style>
@@ -643,6 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeGameStop = null;
 
     const openGameModal = (title, startFunction, canvasToShow) => {
+      document.body.classList.add('game-active');
       gameTitle.textContent = title;
       gameMsg.innerHTML = '';
       modalJoguinho.style.display = 'flex';
@@ -668,6 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fecharJoguinho.onclick = () => {
+      document.body.classList.remove('game-active');
       modalJoguinho.style.display = 'none';
       if (activeGameStop) {
         activeGameStop();
@@ -871,6 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Módulo de Efeitos Visuais ---
   const initVisualEffects = () => {
+    let shootingStarInterval;
     // Efeito de brilho no cursor
     document.addEventListener('mousemove', (e) => {
         const sparkle = document.createElement('div');
@@ -910,7 +921,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => star.remove(), 5000);
     };
-    setInterval(createShootingStar, 6000); // Cria uma estrela a cada 6 segundos
+    
+    const startShootingStars = () => {
+        if (!shootingStarInterval) {
+            shootingStarInterval = setInterval(createShootingStar, 6000);
+        }
+    };
+    
+    document.body.addEventListener('game-active-change', (e) => {
+        e.detail.active ? clearInterval(shootingStarInterval) : startShootingStars();
+    });
+    startShootingStars();
   };
 
   // --- Inicialização ---
