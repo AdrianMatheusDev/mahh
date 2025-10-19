@@ -145,6 +145,20 @@ section{
 /* small responsive */
 @media(max-width:720px){h1{font-size:1.4rem}.container{margin:16px}}
 
+/* Otimização do modal de jogo para mobile */
+@media(max-width: 520px) {
+  #modalJoguinho > div {
+    width: 100%; height: 100%; border-radius: 0;
+  }
+  /* Reduz animações de fundo em mobile para performance */
+  .s.s1, .s.s3, .s.s5, .s.s7, .s.s9, .s.s11, .s.s13, .s.s15,
+  .heart.h2, .heart.h4, .heart.h6, .heart.h8, .heart.h10 {
+    display: none;
+  }
+  .actions-grid {
+    grid-template-columns: 1fr; /* Coluna única em telas muito pequenas */
+  }
+}
 /* Cursor Sparkle Effect */
 .sparkle {
     position: fixed;
@@ -212,6 +226,12 @@ section{
     100% { left: 115%; }
 }
 
+.walking-duck {
+    position: fixed; bottom: 5px; font-size: 2rem; z-index: 1001; animation: heart-flee 12s linear infinite;
+    0% { left: 5%; }
+    100% { left: 115%; }
+}
+
 /* Game Performance Optimization */
 body.game-active #cssWallpaper .nebula,
 body.game-active #cssWallpaper .cloud,
@@ -220,13 +240,69 @@ body.game-active #cssWallpaper .heart,
 body.game-active .actions-grid section {
     animation-play-state: paused;
 }
+body.game-active .dog-body-group,
+body.game-active .dog-tongue {
+    animation-play-state: paused !important;
+}
 
 /* utility */
 .hidden{display:none}
+
+/* Looking Dog */
+.looking-dog {
+    position: relative;
+    width: 110px; /* Ajuste de tamanho */
+    height: 90px; /* Ajuste de tamanho */
+    cursor: pointer;
+    margin: 0 auto; /* Centraliza o cachorro */
+}
+.dog-mission {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px; /* Espaço abaixo do cachorro */
+}
+.dog-food-bowl { font-size: 2.5rem; cursor: pointer; transition: transform 0.3s, opacity 0.3s; }
+.dog-food-bowl:hover { transform: scale(1.1); }
+.dog-food-bowl.fed { opacity: 0.5; cursor: not-allowed; transform: scale(0.9); }
+.dog-streak { font-weight: bold; color: #ffc107; text-shadow: 0 0 5px #ff9800; }
+@media (max-width: 768px) {
+    #dog-section { display: none; } /* Esconde a seção do cachorro em telas menores */
+}
+.dog-pupil {
+    /* Transição suave para o movimento dos olhos */
+    transition: transform 0.2s ease-out;
+}
+.looking-dog svg {
+    width: 100%; height: 100%;
+}
+/* Animação de pulo do cachorro */
+@keyframes dog-jump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+/* Animação de carinho no cachorro */
+@keyframes dog-pet {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+}
+/* Animação de comer */
+@keyframes dog-eat {
+    0%, 100% { transform: translateY(0); }
+    25%, 75% { transform: translateY(5px) rotate(3deg); }
+    50% { transform: translateY(0) rotate(-3deg); }
+}
+/* Animação de respiração do cachorro */
+@keyframes dog-breathe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+.dog-body-group { animation: dog-breathe 3.5s ease-in-out infinite; }
 </style>
 </head>
 <body>
-
   <div id="cssWallpaper" aria-hidden="true">
     <div class="parallax-layer" data-speed="1"><div class="nebula"></div></div>
     <div class="parallax-layer" data-speed="2">
@@ -328,12 +404,50 @@ body.game-active .actions-grid section {
           <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
             <button id="btnAbrirFlapBird" class="btn">Flap Bird</button>
             <button id="btnAbrirDinoDuck" class="btn">Corrida da Mariane</button>
+            <button id="btnAbrirClicker" class="btn">Clique Rápido</button>
           </div>
         </section>
 
         <section id="elogio-section" style="--angle: 225deg;">
           <h3 style="color:var(--accent-2);margin-bottom:12px">💖 Gerar um elogio</h3>
           <button id="abrirElogioFromSection" class="btn">Gerar elogio</button>
+        </section>
+
+        <section id="dog-section" style="--angle: 315deg; text-align: center;">
+          <h3 style="color:var(--accent-2);margin-bottom:12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            Nosso Auau
+            <span id="dog-info-icon" title="Regras do Auau" style="cursor: pointer; font-size: 0.7em; color: var(--muted); border: 1px solid var(--muted); border-radius: 50%; width: 1.5em; height: 1.5em; line-height: 1.5em; display: inline-block; transition: all 0.2s;">ⓘ</span>
+          </h3>
+          <!-- Cachorro observador -->
+          <div id="looking-dog" class="looking-dog">
+            <svg viewBox="-20 -15 160 145" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <filter id="dog-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+                <linearGradient id="pot-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#c0c0c0;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <g class="dog-body-group" transform="translate(5, 35) scale(0.9)">
+                <path d="M 105,75 C 115,45 100,10 80,-2 C 60,-15 40,-15 20,-2 C 0,10 -15,45 -5,75 V 90 H 105 Z" fill="#D2B48C" stroke="#A0522D" stroke-width="2.5"/><path d="M -10,30 C -10,5 10,-15 25,-10 C 35,-7 30,15 20,35 Z" fill="#B59878" stroke="#A0522D" stroke-width="2"/><path d="M 120,30 C 120,5 100,-15 85,-10 C 75,-7 80,15 90,35 Z" fill="#B59878" stroke="#A0522D" stroke-width="2"/>
+                <path d="M 55,40 m -20,0 a 20,10 0 1,0 40,0" fill="#F5DEB3" stroke="#A0522D" stroke-width="2"/><path d="M 55,45 m -5,0 a 5,8 0 1,1 10,0" fill="#44281d" stroke="black" stroke-width="1"/><g id="dog-eyes" transform="translate(-5, 5)"><ellipse cx="43" cy="25" rx="9" ry="11" fill="white" stroke="#555" stroke-width="1"/><ellipse cx="72" cy="25" rx="9" ry="11" fill="white" stroke="#555" stroke-width="1"/><circle class="dog-pupil" cx="43" cy="25" r="4.5" fill="#222"/><circle class="dog-pupil" cx="72" cy="25" r="4.5" fill="#222"/></g>
+                <g transform="translate(80, 60) rotate(15) scale(0.2)"> <path d="M 42.5,23.5c-6.2,0-11.7,3.6-14.5,8.9c-1.8,3.5-2.3,7.6-1.7,11.6c0.6,4,2.4,7.6,5,10.5c2.7,2.9,6.3,4.9,10.4,5.6 c4.1,0.7,8.1-0.5,11.5-2.3c3.5-1.8,6.5-4.7,8.5-8.5c2-3.8,3-8.1,2.3-12.4c-0.6-4.2-2.4-8.1-5.1-11.3C66.1,25.3,59.5,21.4,42.5,23.5z" fill="#A0522D" stroke="#8B4513" stroke-width="3"/> </g>
+              </g>
+              <!-- Panela (retângulo simples) -->
+              <rect x="-5" y="90" width="120" height="30" rx="5" fill="url(#pot-gradient)" stroke="#555" stroke-width="1.5" filter="url(#dog-shadow)"/>
+              <!-- Iniciais na Panela -->
+              <text x="55" y="108" font-family="Poppins, sans-serif" font-size="14" font-weight="600" fill="#666" text-anchor="middle">A M</text>
+              <rect x="-20" y="92" width="20" height="12" rx="4" fill="#444" />
+              <!-- Patinhas na borda -->
+              <path d="M 35,85 a 10 10 0 0 1 20 0 v 5 a 10 10 0 0 1 -20 0 z" fill="#D2B48C" stroke="#A0522D" stroke-width="2"/>
+              <path d="M 65,85 a 10 10 0 0 1 20 0 v 5 a 10 10 0 0 1 -20 0 z" fill="#D2B48C" stroke="#A0522D" stroke-width="2"/>
+            </svg>
+          </div>
+          <!-- Missão do Cachorro -->
+          <div class="dog-mission">
+            <div id="dog-food-bowl" class="dog-food-bowl" title="Alimentar o cachorrinho">🥣</div>
+            <div class="dog-streak"><span id="dog-streak-count">0</span> 🔥</div>
+          </div>
         </section>
 
       </div>
@@ -352,6 +466,7 @@ body.game-active .actions-grid section {
           <button class="btn" id="btnDicaSegredo">💡 Dica</button>
           <button class="btn" id="btnMomentoCerto" disabled>&lt;no momento certo&gt;</button>
       </div>
+
     </div>
   </div>
 
@@ -403,6 +518,7 @@ O tipo de coisa que só o inesperado explica.
       <button id="btnIniciarJogo" class="btn">Iniciar</button>
       <canvas id="flapCanvas" width="240" height="320" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
       <canvas id="gameCanvas" width="480" height="200" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
+      <canvas id="clickerCanvas" width="480" height="320" style="background:#a5d6a7;border-radius:12px;display:none;margin:12px auto;max-width:100%"></canvas>
       <div id="gameMsg" style="color:#388e3c;font-family:Pacifico;margin-top:6px; line-height: 1.4;"></div>
     </div>
   </div>
@@ -413,6 +529,22 @@ O tipo de coisa que só o inesperado explica.
       <h3 id="letterTitle" style="color:var(--accent); margin-bottom: 16px; font-family: Pacifico, cursive;"></h3>
       <p id="letterContent" style="margin-bottom:20px;color:var(--muted);font-size:1.1em;line-height:1.6;"></p>
       <button id="btnFecharLetter" class="btn">Fechar</button>
+    </div>
+  </div>
+
+  <div id="dogInfoModal" class="hidden modal-container">
+    <div style="background:linear-gradient(180deg,rgba(14,18,16,0.98),rgba(12,16,14,0.95));color:#eafaf0;min-width:280px;max-width: 90vw; width: 450px; border-radius:16px;padding:24px;text-align:left;box-shadow:var(--sombra);border:1px solid var(--glass-border);">
+      <div style="font-size: 2.5em; margin-bottom: 12px; text-align: center;">🐶</div>
+      <h3 style="color:var(--accent); margin-bottom: 16px; font-family: Pacifico, cursive; text-align: center;">Regras do Auau</h3>
+      <ul style="margin-bottom:20px;color:var(--muted);font-size:1.1em;line-height:1.6; padding-left: 20px;">
+        <li>Alimente o auau <strong>uma vez por dia</strong> para manter a sequência.</li>
+        <li>A alimentação fica disponível novamente à <strong>meia-noite (horário de Brasília)</strong>.</li>
+        <li>Se você pular um dia, a sequência de dias (🔥) é <strong>zerada</strong>!</li>
+        <li>Cuide bem dele! 😉</li>
+      </ul>
+      <div style="text-align: center;">
+        <button id="btnFecharDogInfo" class="btn">Entendi!</button>
+      </div>
     </div>
   </div>
 
@@ -635,6 +767,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     $('#btnFecharLetter')?.addEventListener('click', () => closeModal('#letterModal'));
+
+    // Dog Info Modal
+    const dogInfoIcon = $('#dog-info-icon');
+    if (dogInfoIcon) {
+      dogInfoIcon.addEventListener('click', () => openModal('#dogInfoModal'));
+      dogInfoIcon.addEventListener('mouseover', () => { dogInfoIcon.style.color = 'var(--accent)'; dogInfoIcon.style.borderColor = 'var(--accent)'; });
+      dogInfoIcon.addEventListener('mouseout', () => { dogInfoIcon.style.color = 'var(--muted)'; dogInfoIcon.style.borderColor = 'var(--muted)'; });
+    }
+    $('#btnFecharDogInfo')?.addEventListener('click', () => closeModal('#dogInfoModal'));
   }; 
 
   // --- Módulo do Jogo Flap Bird ---
@@ -648,6 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Canvases
     const flapCanvas = document.getElementById('flapCanvas');
     const gameCanvas = document.getElementById('gameCanvas');
+    const clickerCanvas = document.getElementById('clickerCanvas');
 
     let activeGameStop = null;
 
@@ -661,6 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnIniciarJogo.textContent = 'Iniciar';
       flapCanvas.style.display = 'none';
       gameCanvas.style.display = 'none';
+      clickerCanvas.style.display = 'none';
 
       btnIniciarJogo.onclick = () => {
         btnIniciarJogo.style.display = 'none';
@@ -678,6 +821,10 @@ document.addEventListener('DOMContentLoaded', () => {
       openGameModal('Corrida Doce da Mariane 🦆', startDinoDuckGame, gameCanvas);
     });
 
+    $('#btnAbrirClicker')?.addEventListener('click', () => {
+      openGameModal('Clique Rápido 🎯', startClickerGame, clickerCanvas);
+    });
+
     fecharJoguinho.onclick = () => {
       document.body.dispatchEvent(new CustomEvent('game-active-change', { detail: { active: false } }));
       document.body.classList.remove('game-active');
@@ -690,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Flap Bird Logic ---
     function startFlapBirdGame() {
-        let flapInterval, flapScore, flapBird, flapPipes, flapGravity, flapGameOver;
+        let animationFrameId, flapScore, flapBird, flapPipes, flapGravity, flapGameOver;
         const ctx = flapCanvas.getContext('2d');
         flapScore = 0;
         flapBird = { x: 50, y: 160, vy: 0 };
@@ -698,7 +845,8 @@ document.addEventListener('DOMContentLoaded', () => {
         flapGravity = 0.28;
         flapGameOver = false;
         document.body.style.overflow = 'hidden';
-        let flapSpeed = 1.7; // velocidade inicial
+        let flapSpeed = 85; // velocidade em pixels por segundo
+        let lastTime = 0;
 
         function drawFlap() {
             ctx.clearRect(0,0,240,320);
@@ -719,12 +867,19 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = "#388e3c";
             ctx.fillText("Pontos: "+flapScore, 10, 28);
         }
-        function updateFlap() {
-            flapBird.vy += flapGravity;
-            flapBird.y += flapBird.vy;
+        function updateFlap(timestamp) {
+            if (flapGameOver) return;
+            if (!lastTime) lastTime = timestamp;
+            const deltaTime = (timestamp - lastTime) / 1000; // DeltaTime em segundos
+            if (deltaTime > 0.03) { /* Limita o deltaTime para evitar saltos */ animationFrameId = requestAnimationFrame(updateFlap); return; }
+
+            const gravityPerSecond = flapGravity * 60;
+            flapBird.vy += gravityPerSecond * deltaTime;
+            flapBird.y += flapBird.vy * 60 * deltaTime;
             for(let i=0;i<flapPipes.length;i++){
-                flapPipes[i].x -= flapSpeed; // velocidade variável
+                flapPipes[i].x -= flapSpeed * deltaTime; // velocidade baseada no tempo
             }
+            lastTime = timestamp;
             if(flapPipes[flapPipes.length-1].x < 120){
                 flapPipes.push({ x: 260, gap: Math.random()*80+90 });
             }
@@ -743,15 +898,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if(flapBird.y > 320-12 || flapBird.y < 12){
                 flapGameOver = true;
             }
-            if (flapSpeed < 4) {
-                flapSpeed += 0.002; // ajuste para acelerar devagar
+            if (flapSpeed < 210) { // Limite de velocidade
+                flapSpeed += 0.1; // aceleração mais lenta
             }
             drawFlap();
-            if(flapGameOver){
+            if (flapGameOver) {
                 stopFlapBirdGame();
                 gameMsg.innerHTML = `Fim de jogo!<br>Sua pontuação: <b>${flapScore}</b><br><span style="font-size:1.1em;">Me manda print! 😄</span>`;
                 btnIniciarJogo.style.display = 'block';
                 btnIniciarJogo.textContent = 'Jogar de Novo';
+            } else {
+                animationFrameId = requestAnimationFrame(updateFlap);
             }
         }
         function flap() {
@@ -763,11 +920,11 @@ document.addEventListener('DOMContentLoaded', () => {
         flapCanvas.onclick = eventHandler;
         flapCanvas.ontouchstart = eventHandler;
         document.onkeydown = (e) => { if(e.code==="Space") flap(); };
-        flapInterval = setInterval(updateFlap, 1000/50);
+        animationFrameId = requestAnimationFrame(updateFlap);
         drawFlap();
         
         const stopFlapBirdGame = () => {
-            clearInterval(flapInterval);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
             document.onkeydown = null;
             document.body.style.overflow = '';
         };
@@ -776,21 +933,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Dino Duck Logic ---
     function startDinoDuckGame() {
-        let gameInterval, score, player, obstacles, sweets, gravity, gameOver, gameSpeed;
+        let animationFrameId, score, player, obstacles, sweets, gravity, gameOver, gameSpeed;
         const ctx = gameCanvas.getContext('2d');
         score = 0;
-        gameSpeed = 3;
-        gravity = 0.4;
+        gameSpeed = 160; // Velocidade inicial em pixels por segundo
+        gravity = 0.4; // Gravidade por frame (será normalizada)
         gameOver = false;
         player = { x: 50, y: 160, width: 30, height: 30, vy: 0, isJumping: false };
         obstacles = [];
         sweets = [];
         document.body.style.overflow = 'hidden';
+        let lastTime = 0;
 
-        function updateDino() {
+        function updateDino(timestamp) {
             if (gameOver) return;
-            player.vy += gravity;
-            player.y += player.vy;
+            const deltaTime = (timestamp - lastTime) / 1000; // DeltaTime em segundos
+            lastTime = timestamp || 0;
+            if (deltaTime > 0.03) { animationFrameId = requestAnimationFrame(updateDino); return; }
+
+            const gravityPerSecond = gravity * 60;
+            player.vy += gravityPerSecond * deltaTime;
+            player.y += player.vy * 60 * deltaTime;
             if (player.y > gameCanvas.height - player.height - 10) {
                 player.y = gameCanvas.height - player.height - 10;
                 player.vy = 0;
@@ -804,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sweets.push({ x: gameCanvas.width, y: Math.random() * 80 + 60, type: sweetTypes[Math.floor(Math.random() * sweetTypes.length)] });
             }
             obstacles.forEach((obs, index) => {
-                obs.x -= gameSpeed;
+                obs.x -= gameSpeed * deltaTime;
                 if (obs.x + obs.width < 0) obstacles.splice(index, 1);
                 // Lógica de colisão específica para os obstáculos no chão
                 // Colisão um pouco mais permissiva
@@ -816,14 +979,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             sweets.forEach((sweet, index) => {
-                sweet.x -= gameSpeed;
+                sweet.x -= gameSpeed * deltaTime;
                 if (sweet.x < -20) sweets.splice(index, 1);
                 if (checkCollision(player, { ...sweet, width: 20, height: 20 })) {
                     score += 10;
                     sweets.splice(index, 1);
                 }
             });
-            gameSpeed += 0.0008; // Aceleração um pouco mais lenta
+            // gameSpeed += 0.5; // Velocidade constante a pedido do usuário
             drawDino();
             if (gameOver) {
                 stopDinoDuckGame();
@@ -831,6 +994,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnIniciarJogo.style.display = 'block';
                 btnIniciarJogo.textContent = 'Tentar Novamente';
             }
+
+            animationFrameId = requestAnimationFrame(updateDino);
         }
         function drawDino() {
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
@@ -871,17 +1036,122 @@ document.addEventListener('DOMContentLoaded', () => {
         gameCanvas.onclick = eventHandler;
         gameCanvas.ontouchstart = eventHandler;
         document.onkeydown = (e) => { if (e.code === "Space") jump(); };
-        gameInterval = setInterval(updateDino, 1000 / 60);
+        animationFrameId = requestAnimationFrame(updateDino);
         drawDino();
 
         const stopDinoDuckGame = () => {
-            clearInterval(gameInterval);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
             document.onkeydown = null;
             document.body.style.overflow = '';
         };
         return stopDinoDuckGame;
     }
   };
+    // --- Clicker Game Logic ---
+    function startClickerGame() {
+        const ctx = clickerCanvas.getContext('2d');
+        let score, timeLeft, items, gameOver;
+        let animationFrameId, timerInterval, spawnInterval;
+
+        function init() {
+            score = 0;
+            timeLeft = 30;
+            items = [];
+            gameOver = false;
+            document.body.style.overflow = 'hidden';
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+            timerInterval = setInterval(updateTimer, 1000);
+            spawnInterval = setInterval(spawnItem, 600); // Gera um item a cada 600ms
+
+            clickerCanvas.addEventListener('click', handleClick);
+        }
+
+        function stopGame() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            clearInterval(timerInterval);
+            clearInterval(spawnInterval);
+            clickerCanvas.removeEventListener('click', handleClick);
+            document.body.style.overflow = '';
+            gameOver = true;
+
+            gameMsg.innerHTML = `Tempo esgotado!<br>Sua pontuação final: <b>${score}</b><br><span style="font-size:1.1em;">Me manda print! 😄</span>`;
+            btnIniciarJogo.style.display = 'block';
+            btnIniciarJogo.textContent = 'Jogar de Novo';
+        }
+
+        function spawnItem() {
+            if (gameOver) return;
+            const itemTypes = [
+                { type: '❤️', value: 1, probability: 0.6 },
+                { type: '💚', value: 2, probability: 0.2 },
+                { type: '💣', value: -1, probability: 0.2 }
+            ];
+            const rand = Math.random();
+            let cumulativeProb = 0;
+            let selectedType;
+
+            for (const itemType of itemTypes) {
+                cumulativeProb += itemType.probability;
+                if (rand <= cumulativeProb) {
+                    selectedType = itemType;
+                    break;
+                }
+            }
+
+            items.push({
+                type: selectedType.type,
+                value: selectedType.value,
+                x: Math.random() * (clickerCanvas.width - 40) + 20,
+                y: Math.random() * (clickerCanvas.height - 60) + 40, // Não aparecer muito no topo
+                size: 30,
+                createdAt: Date.now()
+            });
+        }
+
+        function updateTimer() {
+            if (gameOver) return;
+            timeLeft--;
+            if (timeLeft <= 0) {
+                stopGame();
+            }
+        }
+
+        function handleClick(e) {
+            if (gameOver) return;
+            const rect = clickerCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                const distance = Math.sqrt(Math.pow(x - item.x, 2) + Math.pow(y - item.y, 2));
+                if (distance < item.size / 2) {
+                    if (item.value === -1) { // Bomba
+                        stopGame();
+                        gameMsg.innerHTML = `BOOM! 💣 Fim de jogo!<br>Sua pontuação: <b>${score}</b>`;
+                        return;
+                    }
+                    score += item.value;
+                    items.splice(i, 1);
+                    return;
+                }
+            }
+        }
+
+        function gameLoop() {
+            if (gameOver) return;
+            ctx.clearRect(0, 0, clickerCanvas.width, clickerCanvas.height);
+            items = items.filter(item => Date.now() - item.createdAt < 2000); // Itens somem depois de 2s
+            items.forEach(item => { ctx.font = `${item.size}px sans-serif`; ctx.fillText(item.type, item.x - item.size/2, item.y + item.size/2); });
+            ctx.font = "bold 1.2em 'Pacifico', cursive"; ctx.fillStyle = "#388e3c";
+            ctx.fillText(`Pontos: ${score}`, 10, 28); ctx.fillText(`Tempo: ${timeLeft}`, clickerCanvas.width - 110, 28);
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        init();
+        return stopGame;
+    }
 
   // --- Módulo de Efeitos Visuais ---
   const initVisualEffects = () => {
@@ -908,15 +1178,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Efeito Parallax
     const parallaxLayers = $$('.parallax-layer');
-    document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
-        const y = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+    const initParallax = () => {
+        // Desativa o parallax em telas pequenas para performance
+        if (window.innerWidth < 768) return;
 
-        parallaxLayers.forEach(layer => {
-            const speed = layer.dataset.speed;
-            layer.style.transform = `translateX(${x * -speed * 4}px) translateY(${y * -speed * 4}px)`;
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
+            const y = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+
+            parallaxLayers.forEach(layer => {
+                const speed = layer.dataset.speed;
+                layer.style.transform = `translateX(${x * -speed * 4}px) translateY(${y * -speed * 4}px)`;
+            });
         });
-    });
+    };
 
     // Efeito de Estrela Cadente
     const createShootingStar = () => {
@@ -947,6 +1222,117 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     startShootingStars();
+    initParallax();
+
+    // Efeito do Cachorro Observador
+    const lookingDog = $('#looking-dog');
+    const pupils = $$('.dog-pupil');
+
+    // --- Lógica da Missão do Cachorro ---
+    const foodBowl = $('#dog-food-bowl');
+    const streakCountEl = $('#dog-streak-count');
+
+    const checkMidnight = () => {
+        const now = new Date();
+        const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0) - now;
+        setTimeout(() => {
+            // À meia-noite, reinicia a missão e depois agenda a próxima verificação
+            initDogMission();
+            checkMidnight();
+        }, msUntilMidnight + 1000); // Adiciona 1 segundo de margem
+    };
+
+    const canFeedToday = () => {
+        return localStorage.getItem('dogLastFedDate') !== getToday();
+    };
+
+    const getToday = () => new Date().toISOString().split('T')[0];
+
+    const initDogMission = () => {
+      if (!foodBowl || !streakCountEl) return;
+
+      let lastFedDate = localStorage.getItem('dogLastFedDate');
+      let streak = parseInt(localStorage.getItem('dogFeedStreak') || '0');
+      const today = getToday();
+
+      if (lastFedDate) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        // Se não alimentou ontem nem hoje, zera a sequência
+        if (lastFedDate !== yesterdayStr && lastFedDate !== today) {
+          streak = 0;
+          localStorage.setItem('dogFeedStreak', '0');
+        }
+      }
+
+      streakCountEl.textContent = streak;
+
+      if (!canFeedToday()) {
+        foodBowl.classList.add('fed');
+        foodBowl.textContent = '😋'; // Mostra que já comeu
+      } else {
+        foodBowl.classList.remove('fed');
+        foodBowl.textContent = '🥣';
+      }
+
+      foodBowl.addEventListener('click', () => {
+        if (!canFeedToday()) return;
+
+        // Animação de comer
+        lookingDog.style.animation = 'dog-eat 1s ease-in-out';
+        setTimeout(() => { lookingDog.style.animation = ''; }, 1000);
+
+        const newStreak = (localStorage.getItem('dogLastFedDate') === new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0]) ? streak + 1 : 1;
+        
+        localStorage.setItem('dogLastFedDate', getToday());
+        localStorage.setItem('dogFeedStreak', newStreak.toString());
+        streakCountEl.textContent = newStreak;
+        
+        foodBowl.classList.add('fed');
+        foodBowl.textContent = '😋';
+      });
+    };
+    checkMidnight(); // Inicia a verificação da meia-noite
+
+    if (lookingDog && pupils.length > 0) {
+      const eyeCenters = [ { x: 48, y: 65 }, { x: 82, y: 65 } ]; // Posição central dos olhos no SVG
+      const maxPupilMove = 3; // O quanto a pupila pode se mover do centro
+
+      document.addEventListener('mousemove', (e) => {
+        const dogRect = lookingDog.getBoundingClientRect();
+        
+        pupils.forEach((pupil, index) => {
+            const eyeCenterX = dogRect.left + (eyeCenters[index].x / 130) * dogRect.width;
+            const eyeCenterY = dogRect.top + (eyeCenters[index].y / 110) * dogRect.height;
+
+            const deltaX = e.clientX - eyeCenterX;
+            const deltaY = e.clientY - eyeCenterY;
+            const angle = Math.atan2(deltaY, deltaX);
+
+            const moveX = Math.cos(angle) * maxPupilMove;
+            const moveY = Math.sin(angle) * maxPupilMove;
+            
+            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+      });
+
+      // Animação de carinho ao clicar no cachorro
+      lookingDog.addEventListener('click', (e) => {
+        e.stopPropagation(); // Impede que o clique se propague para o document
+        lookingDog.style.animation = 'dog-pet 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        setTimeout(() => { lookingDog.style.animation = ''; }, 600);
+      });
+
+      // Animação de pulo ao clicar em qualquer outro lugar
+      document.addEventListener('click', (e) => {
+          // Apenas a animação de pulo, sem virar de lado
+          lookingDog.style.animation = 'dog-jump 0.5s ease-out';
+          setTimeout(() => { lookingDog.style.animation = ''; }, 500);
+      });
+    }
+    initDogMission();
   };
 
   // --- Inicialização ---
