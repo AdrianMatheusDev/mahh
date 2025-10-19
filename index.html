@@ -216,7 +216,8 @@ section{
 body.game-active #cssWallpaper .nebula,
 body.game-active #cssWallpaper .cloud,
 body.game-active #cssWallpaper .s-inner,
-body.game-active #cssWallpaper .heart {
+body.game-active #cssWallpaper .heart,
+body.game-active .actions-grid section {
     animation-play-state: paused;
 }
 
@@ -651,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeGameStop = null;
 
     const openGameModal = (title, startFunction, canvasToShow) => {
+      document.body.dispatchEvent(new CustomEvent('game-active-change', { detail: { active: true } }));
       document.body.classList.add('game-active');
       gameTitle.textContent = title;
       gameMsg.innerHTML = '';
@@ -677,6 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fecharJoguinho.onclick = () => {
+      document.body.dispatchEvent(new CustomEvent('game-active-change', { detail: { active: false } }));
       document.body.classList.remove('game-active');
       modalJoguinho.style.display = 'none';
       if (activeGameStop) {
@@ -881,9 +884,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Módulo de Efeitos Visuais ---
   const initVisualEffects = () => {
-    let shootingStarInterval;
+    let shootingStarInterval, sparklesActive = true;
     // Efeito de brilho no cursor
-    document.addEventListener('mousemove', (e) => {
+    const sparkleHandler = (e) => {
+        if (!sparklesActive) return;
+
         const sparkle = document.createElement('div');
         sparkle.className = 'sparkle';
         document.body.appendChild(sparkle);
@@ -891,10 +896,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sparkle.style.left = `${e.clientX}px`;
         sparkle.style.top = `${e.clientY}px`;
 
-        setTimeout(() => {
-            sparkle.remove();
-        }, 600);
+        setTimeout(() => sparkle.remove(), 600);
+    };
+    document.addEventListener('mousemove', sparkleHandler);
+
+    document.body.addEventListener('game-active-change', (e) => {
+        sparklesActive = !e.detail.active;
     });
+
 
     // Efeito Parallax
     const parallaxLayers = $$('.parallax-layer');
@@ -929,7 +938,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     document.body.addEventListener('game-active-change', (e) => {
-        e.detail.active ? clearInterval(shootingStarInterval) : startShootingStars();
+        if (e.detail.active) {
+            clearInterval(shootingStarInterval);
+            shootingStarInterval = null;
+        } else {
+            startShootingStars();
+        }
     });
     startShootingStars();
   };
