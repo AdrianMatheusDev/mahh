@@ -150,6 +150,9 @@ section{
   #modalJoguinho > div {
     width: 100%; height: 100%; border-radius: 0;
   }
+  #modalJoguinho canvas {
+    width: 100%; /* Faz o canvas do jogo ocupar a largura total */
+  }
   /* Reduz animações de fundo em mobile para performance */
   .s.s1, .s.s3, .s.s5, .s.s7, .s.s9, .s.s11, .s.s13, .s.s15,
   .heart.h2, .heart.h4, .heart.h6, .heart.h8, .heart.h10 {
@@ -267,9 +270,7 @@ body.game-active .dog-tongue {
 .dog-food-bowl:hover { transform: scale(1.1); }
 .dog-food-bowl.fed { opacity: 0.5; cursor: not-allowed; transform: scale(0.9); }
 .dog-streak { font-weight: bold; color: #ffc107; text-shadow: 0 0 5px #ff9800; }
-@media (max-width: 768px) {
-    #dog-section { display: none; } /* Esconde a seção do cachorro em telas menores */
-}
+
 .dog-pupil {
     /* Transição suave para o movimento dos olhos */
     transition: transform 0.2s ease-out;
@@ -1064,7 +1065,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timerInterval = setInterval(updateTimer, 1000);
             spawnInterval = setInterval(spawnItem, 600); // Gera um item a cada 600ms
 
-            clickerCanvas.addEventListener('click', handleClick);
+            clickerCanvas.addEventListener('click', handleInteraction);
+            clickerCanvas.addEventListener('touchstart', handleInteraction);
         }
 
         function stopGame() {
@@ -1072,7 +1074,8 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerInterval);
             clearInterval(spawnInterval);
             clickerCanvas.removeEventListener('click', handleClick);
-            document.body.style.overflow = '';
+            clickerCanvas.removeEventListener('click', handleInteraction);
+            clickerCanvas.removeEventListener('touchstart', handleInteraction);
             gameOver = true;
 
             gameMsg.innerHTML = `Tempo esgotado!<br>Sua pontuação final: <b>${score}</b><br><span style="font-size:1.1em;">Me manda print! 😄</span>`;
@@ -1117,11 +1120,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        function handleClick(e) {
+        const handleInteraction = (e) => {
+            e.preventDefault();
             if (gameOver) return;
             const rect = clickerCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const touch = e.touches ? e.touches[0] : e;
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
 
             for (let i = items.length - 1; i >= 0; i--) {
                 const item = items[i];
