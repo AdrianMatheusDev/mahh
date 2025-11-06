@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Joguinhos - Mundo da Mariane</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/games.css">
+</head>
+<body>
+    <div id="cssWallpaper" aria-hidden="true">
+        <div class="parallax-layer">
+            <div class="nebula"></div>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <header class="games-header">
+            <a href="index.html" class="back-button">← Voltar</a>
+            <h1>Joguinhos</h1>
+        </header>
+
+        <main class="games-container">
+            <div class="game-card">
+                <div class="game-icon">🦆</div>
+                <h2>Flappy Duck</h2>
+                <p>Voe através dos obstáculos!</p>
+                <button class="play-button" data-game="flappy">Jogar</button>
+                <div class="best-score">
+                    Melhor: <span id="flappyBest">0</span>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="game-icon">🌳</div>
+                <h2>Dino Duck</h2>
+                <p>Pule os obstáculos!</p>
+                <button class="play-button" data-game="dino">Jogar</button>
+                <div class="best-score">
+                    Melhor: <span id="dinoBest">0</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal do Jogo -->
+    <div id="gameModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-button">×</button>
+            <h2 id="gameTitle"></h2>
+            <div class="game-area">
+                <canvas id="gameCanvas"></canvas>
+                <div id="gameScore">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/games.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.animated-fade-in {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.animated-slide-in {
+  animation: slideIn 0.8s ease-in-out forwards;
+}
+
+.animated-heartbeat {
+  animation: heartbeat 1s ease-in-out infinite;
+}
+
+.button-hover {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button-hover:hover {
+  background-color: #ff6f61;
+  transform: scale(1.05);
+}
+
+.image-fade-in {
+  opacity: 0;
+  animation: fadeIn 1.5s ease-in forwards;
+}
+
+.text-appear {
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+.text-slide-in {
+  opacity: 0;
+  animation: slideIn 0.8s ease-in forwards;
+}

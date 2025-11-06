@@ -1,0 +1,30 @@
+{
+  "name": "mariane-romantic-website",
+  "version": "1.0.0",
+  "description": "A romantic website dedicated to Mariane, featuring interactive components and beautiful design.",
+  "main": "src/index.html",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "test": "jest"
+  },
+  "dependencies": {
+    "typescript": "^4.5.4",
+    "vite": "^2.6.4",
+    "three": "^0.132.2"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.6",
+    "vite-plugin-html": "^2.0.0"
+  },
+  "keywords": [
+    "romantic",
+    "website",
+    "Mariane",
+    "interactive",
+    "love"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

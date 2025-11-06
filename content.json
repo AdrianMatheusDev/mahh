@@ -1,0 +1,64 @@
+{
+  "title": "A Tribute to Mariane",
+  "description": "This website is dedicated to the love and admiration for Mariane, showcasing beautiful memories, romantic letters, and interactive experiences.",
+  "hero": {
+    "headline": "To My Dearest Mariane",
+    "subheadline": "A journey of love and memories",
+    "backgroundImage": "url('/path/to/hero-image.jpg')"
+  },
+  "loveLetter": {
+    "greeting": "My Beloved Mariane,",
+    "body": "Every moment spent with you is like a beautiful dream come true. Your smile lights up my darkest days, and your laughter is the sweetest melody I know. I cherish every memory we create together.",
+    "closing": "Forever yours, [Your Name]"
+  },
+  "quotes": [
+    {
+      "text": "Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day.",
+      "author": "Unknown"
+    },
+    {
+      "text": "You are my sun, my moon, and all my stars.",
+      "author": "E.E. Cummings"
+    }
+  ],
+  "gallery": [
+    {
+      "image": "url('/path/to/image1.jpg')",
+      "caption": "Our first date at the park."
+    },
+    {
+      "image": "url('/path/to/image2.jpg')",
+      "caption": "The day we watched the sunset together."
+    },
+    {
+      "image": "url('/path/to/image3.jpg')",
+      "caption": "A beautiful moment captured during our trip."
+    }
+  ],
+  "interactiveMap": {
+    "locations": [
+      {
+        "name": "Our Favorite Café",
+        "coordinates": { "lat": 40.7128, "lng": -74.0060 },
+        "description": "Where we had our first coffee together."
+      },
+      {
+        "name": "The Beach",
+        "coordinates": { "lat": 34.0522, "lng": -118.2437 },
+        "description": "The place where we shared our first kiss."
+      }
+    ]
+  },
+  "audio": {
+    "tracks": [
+      {
+        "title": "Our Song",
+        "url": "/path/to/our-song.mp3"
+      },
+      {
+        "title": "Romantic Playlist",
+        "url": "/path/to/romantic-playlist.mp3"
+      }
+    ]
+  }
+}
